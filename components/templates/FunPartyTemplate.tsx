@@ -11,8 +11,14 @@ import { TypewriterMessage } from "@/components/birthday/TypewriterMessage";
 import { AgeReveal } from "@/components/birthday/AgeReveal";
 import { SurpriseCountdown } from "@/components/birthday/SurpriseCountdown";
 import { ConfettiBurst } from "@/components/birthday/ConfettiBurst";
-import { MusicPlayer } from "@/components/birthday/MusicPlayer";
+//import { MusicPlayer } from "@/components/birthday/MusicPlayer";
 import { BalloonField } from "@/components/birthday/BalloonField";
+import { HeroCake } from "../marketing/HeroCake";
+import { useRef } from "react";
+import {
+  MusicPlayer,
+  type MusicPlayerHandle,
+} from "@/components/birthday/MusicPlayer";
 
 // ---- Fun Party token system ----
 const TOKENS = {
@@ -26,8 +32,15 @@ const TOKENS = {
 };
 
 type Scene =
-  | "intro" | "gift" | "reveal" | "photo" | "gallery"
-  | "message" | "age" | "countdown" | "final";
+  | "intro"
+  | "gift"
+  | "reveal"
+  | "photo"
+  | "gallery"
+  | "message"
+  | "age"
+  | "countdown"
+  | "final";
 
 const bounceIn = {
   initial: { opacity: 0, scale: 0.85 },
@@ -41,27 +54,48 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
   const [burst, setBurst] = useState(0);
   const advance = (next: Scene) => setScene(next);
   const fireConfetti = () => setBurst((b) => b + 1);
+  const musicPlayerRef = useRef<MusicPlayerHandle>(null);
 
   useEffect(() => {
-    if (scene === "gallery" && surprise.memoryPhotos.length === 0) advance("message");
+    if (scene === "gallery" && surprise.memoryPhotos.length === 0)
+      advance("message");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene]);
 
   return (
     <div
       className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-6 py-10 text-center"
-      style={{ background: TOKENS.bg, color: TOKENS.ink, fontFamily: "var(--font-outfit, sans-serif)" }}
+      style={{
+        background: TOKENS.bg,
+        color: TOKENS.ink,
+        fontFamily: "var(--font-outfit, sans-serif)",
+      }}
     >
-      <BalloonField colors={[TOKENS.coral, TOKENS.teal, TOKENS.purple, TOKENS.yellow]} count={7} />
+      <BalloonField
+        colors={[TOKENS.coral, TOKENS.teal, TOKENS.purple, TOKENS.yellow]}
+        count={7}
+      />
       <ConfettiBurst trigger={burst} colors={TOKENS.confetti} count={80} />
       {surprise.musicUrl && (
-        <MusicPlayer src={surprise.musicUrl} accentColor={TOKENS.coral} onStart={() => onEvent?.("music_started")} />
+        <MusicPlayer
+          ref={musicPlayerRef}
+          src={surprise.musicUrl}
+          accentColor={TOKENS.coral}
+          onStart={() => onEvent?.("music_started")}
+        />
       )}
 
       <AnimatePresence mode="wait">
         {scene === "intro" && (
-          <motion.div key="intro" {...bounceIn} className="relative flex flex-col items-center">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em]" style={{ color: TOKENS.purple }}>
+          <motion.div
+            key="intro"
+            {...bounceIn}
+            className="relative flex flex-col items-center"
+          >
+            <p
+              className="mb-4 text-xs font-bold uppercase tracking-[0.3em]"
+              style={{ color: TOKENS.purple }}
+            >
               a surprise for you!
             </p>
             <p className="max-w-xs text-xl font-medium leading-relaxed">
@@ -69,9 +103,15 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
               <span style={{ color: TOKENS.coral }}>super fun</span> for you! 🎉
             </p>
             <button
-              onClick={() => { advance("gift"); onEvent?.("opened"); }}
+              onClick={() => {
+                advance("gift");
+                onEvent?.("opened");
+                musicPlayerRef.current?.play();
+              }}
               className="mt-8 rounded-full px-8 py-4 text-sm font-bold text-white shadow-lg"
-              style={{ background: `linear-gradient(135deg, ${TOKENS.coral}, ${TOKENS.purple})` }}
+              style={{
+                background: `linear-gradient(135deg, ${TOKENS.coral}, ${TOKENS.purple})`,
+              }}
             >
               Open My Surprise 🎁
             </button>
@@ -101,64 +141,122 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
             onAnimationComplete={() => {
               fireConfetti();
               onEvent?.("birthday_revealed");
-              setTimeout(() => advance("photo"), surprise.recipientName.length * 90 + 2200);
+              setTimeout(
+                () => advance("photo"),
+                surprise.recipientName.length * 90 + 2200,
+              );
             }}
           >
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em]" style={{ color: TOKENS.purple }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <HeroCake />
+            </motion.div>
+            <p
+              className="mb-3 text-xs font-bold uppercase tracking-[0.3em]"
+              style={{ color: TOKENS.purple }}
+            >
               happy birthday
             </p>
             <NameReveal
               name={surprise.recipientName}
               className="text-[16vw] font-extrabold leading-none md:text-6xl"
             />
-            <p className="mt-4 text-lg font-medium" style={{ color: TOKENS.coral }}>
+            <p
+              className="mt-4 text-lg font-medium"
+              style={{ color: TOKENS.coral }}
+            >
               {surprise.recipientAge} looks amazing on you! 🥳
             </p>
           </motion.div>
         )}
 
         {scene === "photo" && surprise.mainPhotoUrl && (
-          <motion.div key="photo" {...bounceIn} className="relative flex flex-col items-center">
+          <motion.div
+            key="photo"
+            {...bounceIn}
+            className="relative flex flex-col items-center"
+          >
             <PhotoReveal
               src={surprise.mainPhotoUrl}
               alt={surprise.recipientName}
               caption={`Today is all about you, ${surprise.recipientName}! 🎈`}
               frameColor="#FFFFFF"
             />
-            <button onClick={() => advance("gallery")} className="mt-8 rounded-full px-5 py-2 text-sm font-medium text-white" style={{ background: TOKENS.teal }}>
-              Continue →
+            <button
+              onClick={() => advance("gallery")}
+              className="mt-8 rounded-full px-5 py-2 text-sm font-medium text-white"
+              style={{ background: TOKENS.teal }}
+            >
+              Continue
             </button>
           </motion.div>
         )}
 
         {scene === "gallery" && surprise.memoryPhotos.length > 0 && (
-          <motion.div key="gallery" {...bounceIn} className="relative flex flex-col items-center" onAnimationComplete={() => onEvent?.("gallery_viewed")}>
-            <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em]" style={{ color: TOKENS.purple }}>a few memories</p>
+          <motion.div
+            key="gallery"
+            {...bounceIn}
+            className="relative flex flex-col items-center"
+            onAnimationComplete={() => onEvent?.("gallery_viewed")}
+          >
+            <p
+              className="mb-6 text-xs font-bold uppercase tracking-[0.3em]"
+              style={{ color: TOKENS.purple }}
+            >
+              a few memories
+            </p>
             <MemoryGallery photos={surprise.memoryPhotos} />
-            <button onClick={() => advance("message")} className="mt-8 rounded-full px-5 py-2 text-sm font-medium text-white" style={{ background: TOKENS.teal }}>
-              Continue →
+            <button
+              onClick={() => advance("message")}
+              className="mt-8 rounded-full px-5 py-2 text-sm font-medium text-white"
+              style={{ background: TOKENS.teal }}
+            >
+              Continue
             </button>
           </motion.div>
         )}
 
         {scene === "message" && (
-          <motion.div key="message" {...bounceIn} className="relative flex flex-col items-center">
-            <div className="max-w-md rounded-3xl border-4 p-1" style={{ borderColor: TOKENS.yellow }}>
+          <motion.div
+            key="message"
+            {...bounceIn}
+            className="relative flex flex-col items-center"
+          >
+            <div
+              className="max-w-md rounded-3xl border-4 p-1"
+              style={{ borderColor: TOKENS.yellow }}
+            >
               <TypewriterMessage
                 message={surprise.birthdayMessage}
                 senderName={surprise.senderName}
                 onComplete={() => onEvent?.("message_viewed")}
               />
             </div>
-            <button onClick={() => advance("age")} className="mt-6 rounded-full px-5 py-2 text-sm font-medium text-white" style={{ background: TOKENS.teal }}>
-              Continue →
+            <button
+              onClick={() => advance("age")}
+              className="mt-6 rounded-full px-5 py-2 text-sm font-medium text-white"
+              style={{ background: TOKENS.teal }}
+            >
+              Continue
             </button>
           </motion.div>
         )}
 
         {scene === "age" && (
-          <motion.div key="age" {...bounceIn} className="relative flex flex-col items-center">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em]" style={{ color: TOKENS.purple }}>turning</p>
+          <motion.div
+            key="age"
+            {...bounceIn}
+            className="relative flex flex-col items-center"
+          >
+            <p
+              className="mb-2 text-xs font-bold uppercase tracking-[0.3em]"
+              style={{ color: TOKENS.purple }}
+            >
+              turning
+            </p>
             <AgeReveal
               age={surprise.recipientAge}
               caption={`Let's Party Like It's ${surprise.recipientAge}! 🎊`}
@@ -168,7 +266,9 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
             <button
               onClick={() => advance("countdown")}
               className="mt-8 rounded-full px-8 py-4 text-sm font-bold text-white shadow-lg"
-              style={{ background: `linear-gradient(135deg, ${TOKENS.coral}, ${TOKENS.purple})` }}
+              style={{
+                background: `linear-gradient(135deg, ${TOKENS.coral}, ${TOKENS.purple})`,
+              }}
             >
               One More Surprise 🎁
             </button>
@@ -180,19 +280,35 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
             key="countdown"
             bgColor="#2B2440"
             textColor={TOKENS.yellow}
-            onComplete={() => { fireConfetti(); advance("final"); onEvent?.("surprise_completed"); }}
+            onComplete={() => {
+              fireConfetti();
+              advance("final");
+              onEvent?.("surprise_completed");
+            }}
           />
         )}
 
         {scene === "final" && (
-          <motion.div key="final" {...bounceIn} className="relative flex flex-col items-center">
-            <h1 className="text-4xl font-extrabold" style={{ color: TOKENS.coral }}>
+          <motion.div
+            key="final"
+            {...bounceIn}
+            className="relative flex flex-col items-center"
+          >
+            <h1
+              className="text-4xl font-extrabold"
+              style={{ color: TOKENS.coral }}
+            >
               Happy Birthday, {surprise.recipientName}! 🎂
             </h1>
-            <h3 className="mt-2 text-2xl font-medium" style={{ color: TOKENS.purple }}>
+            <h3
+              className="mt-2 text-2xl font-medium"
+              style={{ color: TOKENS.purple }}
+            >
               You deserve all the happiness in the world!
             </h3>
-            <p className="mt-6 text-xs opacity-70">Made specially for you by {surprise.senderName}</p>
+            <p className="mt-6 text-xs opacity-70">
+              Made specially for you by {surprise.senderName}
+            </p>
             <button
               onClick={() => advance("intro")}
               className="mt-7 rounded-full px-6 py-2.5 text-xs font-medium text-white"

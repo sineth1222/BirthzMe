@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { BalloonField } from "@/components/birthday/BalloonField";
 import { InstallAppSection } from "@/components/shared/InstallAppSection";
 import { HeroCake } from "@/components/marketing/HeroCake";
+import { FireworksField } from "../birthday/FireworksField";
+import { FireworksNomal } from "../birthday/FireWorksNomal";
 
 const STEPS = [
   {
@@ -65,6 +67,14 @@ export default function LandingPage() {
             "radial-gradient(ellipse at 50% -10%, #FCE4E8 0%, #FDF3EF 55%, #F8E9E2 100%)",
         }}
       >
+        <FireworksField
+          colors={["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#f368e0"]}
+          count={4}
+        />
+        <FireworksNomal
+          colors={["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#f368e0"]}
+          count={2}
+        />
         <BalloonField colors={["#B8265A", "#E3B583", "#F6DDE0"]} count={5} />
 
         {/* soft watermark cake behind the copy, echoes the hero centerpiece at low opacity */}
@@ -98,7 +108,7 @@ export default function LandingPage() {
               Made for someone special
             </motion.p>
 
-            {/* ── Background logo watermark ── */}
+            {/* ── Background logo watermark ── /}
             <div className="absolute inset-0 z-[1] flex items-center justify-center pointer-events-none overflow-hidden">
               <div
                 style={{
@@ -119,7 +129,7 @@ export default function LandingPage() {
                   }}
                 />
               </div>
-            </div>
+            </div>*/}
 
             <motion.h1
               initial={{ opacity: 0, y: 16 }}

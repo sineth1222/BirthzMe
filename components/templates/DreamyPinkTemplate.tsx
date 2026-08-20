@@ -11,7 +11,16 @@ import { TypewriterMessage } from "@/components/birthday/TypewriterMessage";
 import { AgeReveal } from "@/components/birthday/AgeReveal";
 import { SurpriseCountdown } from "@/components/birthday/SurpriseCountdown";
 import { ConfettiBurst } from "@/components/birthday/ConfettiBurst";
-import { MusicPlayer } from "@/components/birthday/MusicPlayer";
+//import { MusicPlayer } from "@/components/birthday/MusicPlayer";
+import { HeroCake } from "../marketing/HeroCake";
+import { FireworksField } from "../birthday/FireworksField";
+import { FireworksNomal } from "../birthday/FireWorksNomal";
+import { BalloonField } from "../birthday/BalloonField";
+import { useRef } from "react";
+import {
+  MusicPlayer,
+  type MusicPlayerHandle,
+} from "@/components/birthday/MusicPlayer";
 
 // ---- Dreamy Pink token system ----
 const TOKENS = {
@@ -20,6 +29,7 @@ const TOKENS = {
   roseDeep: "#7C1638",
   gold: "#E3B583",
   mauve: "#7A5766",
+  yellow: "#FFC93C",
   white: "#FFFBF9",
   confetti: ["#B8265A", "#E3B583", "#F6DDE0", "#7C1638"],
 };
@@ -48,6 +58,7 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
 
   const advance = (next: Scene) => setScene(next);
   const fireConfetti = () => setBurst((b) => b + 1);
+  const musicPlayerRef = useRef<MusicPlayerHandle>(null);
 
   // Skip straight past the gallery scene if there are no memory photos —
   // done as an effect, not during render, to avoid a setState-in-render loop.
@@ -60,12 +71,30 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
 
   return (
     <div
-      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-6 py-10 text-center"
-      style={{ background: TOKENS.bg, color: "#3A2430", fontFamily: "var(--font-outfit, sans-serif)" }}
+      className="relative font-display flex min-h-screen w-full items-center justify-center overflow-hidden px-6 py-10 text-center"
+      style={{
+        background: TOKENS.bg,
+        color: "#3A2430",
+        fontFamily: "var(--font-outfit, sans-serif)",
+      }}
     >
       <ConfettiBurst trigger={burst} colors={TOKENS.confetti} />
+      <FireworksField
+        colors={[TOKENS.gold, TOKENS.rose, TOKENS.roseDeep, TOKENS.yellow]}
+        count={4}
+      />
+      <FireworksNomal
+        colors={["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#f368e0"]}
+        count={2}
+      />
+
+      <BalloonField
+        colors={[TOKENS.rose, TOKENS.gold, TOKENS.mauve, TOKENS.yellow]}
+        count={4}
+      />
       {surprise.musicUrl && (
         <MusicPlayer
+          ref={musicPlayerRef}
           src={surprise.musicUrl}
           accentColor={TOKENS.rose}
           onStart={() => onEvent?.("music_started")}
@@ -74,13 +103,20 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
 
       <AnimatePresence mode="wait">
         {scene === "intro" && (
-          <motion.div key="intro" {...fade} className="flex flex-col items-center">
+          <motion.div
+            key="intro"
+            {...fade}
+            className="flex flex-col items-center"
+          >
             <p className="mb-4 text-xs uppercase tracking-[0.3em] text-current/60">
               a private surprise
             </p>
             <p className="max-w-xs text-lg leading-relaxed">
               Someone made something{" "}
-              <span className="font-serif italic" style={{ color: TOKENS.rose }}>
+              <span
+                className="font-serif italic"
+                style={{ color: TOKENS.rose }}
+              >
                 special
               </span>{" "}
               for you...
@@ -89,9 +125,12 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
               onClick={() => {
                 advance("gift");
                 onEvent?.("opened");
+                musicPlayerRef.current?.play();
               }}
               className="mt-8 rounded-full px-8 py-4 text-sm font-medium text-white shadow-lg"
-              style={{ background: `linear-gradient(135deg, ${TOKENS.rose}, ${TOKENS.roseDeep})` }}
+              style={{
+                background: `linear-gradient(135deg, ${TOKENS.rose}, ${TOKENS.roseDeep})`,
+              }}
             >
               Open My Surprise 🎁
             </button>
@@ -120,15 +159,25 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
             onAnimationComplete={() => {
               fireConfetti();
               onEvent?.("birthday_revealed");
-              setTimeout(() => advance("photo"), surprise.recipientName.length * 90 + 2200);
+              setTimeout(
+                () => advance("photo"),
+                surprise.recipientName.length * 90 + 2200,
+              );
             }}
           >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <HeroCake />
+            </motion.div>
             <p className="mb-3 text-xs uppercase tracking-[0.3em] text-current/60">
               happy birthday
             </p>
             <NameReveal
               name={surprise.recipientName}
-              className="bg-clip-text text-[15vw] font-medium leading-none text-transparent md:text-6xl"
+              className="bg-clip-text text-[15vw] font-medium leading-none text-bg md:text-6xl"
             />
             <p className="mt-4 text-base" style={{ color: TOKENS.mauve }}>
               {surprise.recipientAge} looks amazing on you!
@@ -137,14 +186,22 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
         )}
 
         {scene === "photo" && surprise.mainPhotoUrl && (
-          <motion.div key="photo" {...fade} className="flex flex-col items-center">
+          <motion.div
+            key="photo"
+            {...fade}
+            className="flex flex-col items-center"
+          >
             <PhotoReveal
               src={surprise.mainPhotoUrl}
               alt={surprise.recipientName}
               caption={`Today is all about you, ${surprise.recipientName}.`}
               frameColor={TOKENS.white}
             />
-            <button onClick={() => advance("gallery")} className="mt-8 text-sm underline underline-offset-4">
+            <button
+              onClick={() => advance("gallery")}
+              className="mt-8 rounded-full px-5 py-2 text-sm font-medium text-white "
+              style={{ background: TOKENS.rose }}
+            >
               Continue
             </button>
           </motion.div>
@@ -157,30 +214,51 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
             className="flex flex-col items-center"
             onAnimationComplete={() => onEvent?.("gallery_viewed")}
           >
-            <p className="mb-6 text-xs uppercase tracking-[0.3em] text-current/60">a few memories</p>
+            <p className="mb-6 text-xs uppercase tracking-[0.3em] text-current/60">
+              a few memories
+            </p>
             <MemoryGallery photos={surprise.memoryPhotos} />
-            <button onClick={() => advance("message")} className="mt-8 text-sm underline underline-offset-4">
+            <button
+              onClick={() => advance("message")}
+              className="mt-6 rounded-full px-5 py-2 text-sm font-medium text-white "
+              style={{ background: TOKENS.rose }}
+            >
               Continue
             </button>
           </motion.div>
         )}
 
         {scene === "message" && (
-          <motion.div key="message" {...fade} className="flex flex-col items-center">
+          <motion.div
+            key="message"
+            {...fade}
+            className="flex flex-col items-center"
+          >
             <TypewriterMessage
               message={surprise.birthdayMessage}
               senderName={surprise.senderName}
               onComplete={() => onEvent?.("message_viewed")}
             />
-            <button onClick={() => advance("age")} className="mt-6 text-sm underline underline-offset-4">
+            <button
+              onClick={() => advance("age")}
+              //className="mt-6 text-sm underline underline-offset-4"
+              className="mt-6 rounded-full px-5 py-2 text-sm font-medium text-white "
+              style={{ background: TOKENS.rose }}
+            >
               Continue
             </button>
           </motion.div>
         )}
 
         {scene === "age" && (
-          <motion.div key="age" {...fade} className="flex flex-col items-center">
-            <p className="mb-2 text-xs uppercase tracking-[0.3em] text-current/60">turning</p>
+          <motion.div
+            key="age"
+            {...fade}
+            className="flex flex-col items-center"
+          >
+            <p className="mb-2 text-xs uppercase tracking-[0.3em] text-current/60">
+              turning
+            </p>
             <AgeReveal
               age={surprise.recipientAge}
               caption={`${numberToWords(surprise.recipientAge)} Years of Being Amazing ✨`}
@@ -190,7 +268,9 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
             <button
               onClick={() => advance("countdown")}
               className="mt-8 rounded-full px-8 py-4 text-sm font-medium text-white shadow-lg"
-              style={{ background: `linear-gradient(135deg, ${TOKENS.rose}, ${TOKENS.roseDeep})` }}
+              style={{
+                background: `linear-gradient(135deg, ${TOKENS.rose}, ${TOKENS.roseDeep})`,
+              }}
             >
               One More Surprise 🎁
             </button>
@@ -211,11 +291,21 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
         )}
 
         {scene === "final" && (
-          <motion.div key="final" {...fade} className="flex flex-col items-center">
-            <h1 className="font-serif text-4xl" style={{ color: TOKENS.roseDeep }}>
+          <motion.div
+            key="final"
+            {...fade}
+            className="flex flex-col items-center"
+          >
+            <h1
+              className="font-serif text-4xl"
+              style={{ color: TOKENS.roseDeep }}
+            >
               Happy Birthday, {surprise.recipientName} 🎂
             </h1>
-            <h3 className="mt-2 font-serif text-2xl italic" style={{ color: TOKENS.rose }}>
+            <h3
+              className="mt-2 font-serif text-2xl italic"
+              style={{ color: TOKENS.rose }}
+            >
               You deserve all the happiness in the world.
             </h3>
             <p className="mt-6 text-xs" style={{ color: TOKENS.mauve }}>
@@ -238,11 +328,45 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
 }
 
 function numberToWords(n: number): string {
-  const ones = ["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"];
-  const teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-  const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+  const ones = [
+    "Zero",
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+    "Nine",
+  ];
+  const teens = [
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eighteen",
+    "Nineteen",
+  ];
+  const tens = [
+    "",
+    "",
+    "Twenty",
+    "Thirty",
+    "Forty",
+    "Fifty",
+    "Sixty",
+    "Seventy",
+    "Eighty",
+    "Ninety",
+  ];
   if (n < 10) return ones[n];
   if (n < 20) return teens[n - 10];
-  if (n < 100) return `${tens[Math.floor(n / 10)]}${n % 10 ? "-" + ones[n % 10] : ""}`;
+  if (n < 100)
+    return `${tens[Math.floor(n / 10)]}${n % 10 ? "-" + ones[n % 10] : ""}`;
   return String(n);
 }
