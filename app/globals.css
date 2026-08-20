@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Alex+Brush&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Outfit:wght@300;400;500;600&family=Caveat:wght@500;600&display=swap");
+
+:root {
+  --font-outfit: "Outfit", system-ui, sans-serif;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  overscroll-behavior: none;
+}
+
+/* Respect reduced-motion system-wide as a baseline; individual components
+   also check this explicitly for JS-driven animation (see ConfettiBurst,
+   TypewriterMessage). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
