@@ -7,6 +7,7 @@ import { InstallAppSection } from "@/components/shared/InstallAppSection";
 import { HeroCake } from "@/components/marketing/HeroCake";
 import { FireworksField } from "../birthday/FireworksField";
 import { FireworksNomal } from "../birthday/FireWorksNomal";
+import { FireworksText } from "../birthday/FireworksText";
 
 const STEPS = [
   {
@@ -74,6 +75,9 @@ export default function LandingPage() {
         <FireworksNomal
           colors={["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#f368e0"]}
           count={2}
+        />
+        <FireworksText
+          colors={["#ff6b9d", "#4ecdc4", "#ffe66d", "#a29bfe", "#ff9f43"]}
         />
         <BalloonField colors={["#B8265A", "#E3B583", "#F6DDE0"]} count={5} />
 

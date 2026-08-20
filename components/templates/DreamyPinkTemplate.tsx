@@ -21,6 +21,7 @@ import {
   MusicPlayer,
   type MusicPlayerHandle,
 } from "@/components/birthday/MusicPlayer";
+import { FireworksText } from "../birthday/FireworksText";
 
 // ---- Dreamy Pink token system ----
 const TOKENS = {
@@ -86,6 +87,9 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
       <FireworksNomal
         colors={["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#f368e0"]}
         count={2}
+      />
+      <FireworksText
+        colors={["#ff6b9d", "#4ecdc4", "#ffe66d", "#a29bfe", "#ff9f43"]}
       />
 
       <BalloonField

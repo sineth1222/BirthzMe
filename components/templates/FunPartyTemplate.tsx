@@ -19,6 +19,7 @@ import {
   MusicPlayer,
   type MusicPlayerHandle,
 } from "@/components/birthday/MusicPlayer";
+import { FireworksText } from "../birthday/FireworksText";
 
 // ---- Fun Party token system ----
 const TOKENS = {
@@ -74,6 +75,9 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
       <BalloonField
         colors={[TOKENS.coral, TOKENS.teal, TOKENS.purple, TOKENS.yellow]}
         count={7}
+      />
+      <FireworksText
+        colors={["#ff6b9d", "#4ecdc4", "#ffe66d", "#a29bfe", "#ff9f43"]}
       />
       <ConfettiBurst trigger={burst} colors={TOKENS.confetti} count={80} />
       {surprise.musicUrl && (
