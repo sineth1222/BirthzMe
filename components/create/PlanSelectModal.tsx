@@ -74,7 +74,7 @@ export function PlanSelectModal({
         cancel_url: data.cancelUrl,
         notify_url: data.notifyUrl,
         order_id: data.orderId,
-        items: `Remove watermark — ${recipientName}'s birthday surprise`,
+        items: `Remove watermark ${recipientName}'s birthday surprise`,
         amount: data.amount.toFixed(2),
         currency: data.currency,
         hash: data.hash,
