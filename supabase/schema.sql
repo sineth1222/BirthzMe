@@ -58,6 +58,7 @@ create table if not exists birthday_surprises (
   accent_color text,
   animation_style text not null default 'magical'
     check (animation_style in ('soft', 'magical', 'cinematic', 'explosive')),
+    has_watermark boolean not null default true,
   customization_json jsonb not null default '{}'::jsonb,
 
   status text not null default 'draft'

@@ -28,6 +28,7 @@ export interface BirthdaySurprise {
   musicType: "builtin" | "custom" | null;
   accentColor?: string;
   animationStyle: AnimationIntensity;
+  hasWatermark: boolean;
   status: "draft" | "published" | "opened" | "celebrated";
   openedAt?: string | null;
   completedAt?: string | null;

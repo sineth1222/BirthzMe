@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProgressIndicator } from "@/components/shared/ProgressIndicator";
 import { TemplateSelector } from "@/components/create/TemplateSelector";
@@ -19,6 +19,8 @@ import type {
   MemoryPhoto,
 } from "@/types/birthday";
 import { ChevronLeft } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { PlanSelectModal } from "./PlanSelectModal";
 
 const STEP_LABELS = [
   "Template",
@@ -42,6 +44,7 @@ interface Draft {
   musicUrl: string | null;
   musicType: "builtin" | "custom" | null;
   animationStyle: AnimationIntensity;
+  hasWatermark: boolean;
   accentColor: string;
   nickname: string;
   specialMemory: string;
@@ -61,6 +64,7 @@ const EMPTY_DRAFT: Draft = {
   musicUrl: null,
   musicType: null,
   animationStyle: "magical",
+  hasWatermark: true,
   accentColor: "#B8265A",
   nickname: "",
   specialMemory: "",
@@ -74,6 +78,21 @@ export function CreateWizard() {
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [showPlanModal, setShowPlanModal] = useState(false);
+  const [createdSurprise, setCreatedSurprise] = useState<{
+    id: string;
+    slug: string;
+  } | null>(null);
+  const [senderEmail, setSenderEmail] = useState("");
+
+  useEffect(() => {
+    createClient()
+      .auth.getUser()
+      .then(({ data }) => {
+        setSenderEmail(data.user?.email ?? "");
+      });
+  }, []);
 
   const [photosUploading, setPhotosUploading] = useState(false);
 
@@ -120,7 +139,9 @@ export function CreateWizard() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Something went wrong.");
-      router.push(`/create/success?slug=${data.slug}`);
+      //router.push(`/create/success?slug=${data.slug}`);
+      setCreatedSurprise({ id: data.id, slug: data.slug });
+      setShowPlanModal(true);
     } catch (e) {
       setSubmitError(e instanceof Error ? e.message : "Something went wrong.");
     } finally {
@@ -149,6 +170,7 @@ export function CreateWizard() {
     musicType: draft.musicType,
     accentColor: draft.accentColor,
     animationStyle: draft.animationStyle,
+    hasWatermark: draft.hasWatermark,
     status: "draft",
     createdAt: "",
     updatedAt: "",
@@ -196,6 +218,21 @@ export function CreateWizard() {
         )}
         {draft.template === "fun-party" && (
           <FunPartyTemplate surprise={previewSurprise} />
+        )}
+
+        {showPlanModal && createdSurprise && (
+          <PlanSelectModal
+            surpriseId={createdSurprise.id}
+            recipientName={draft.recipientName}
+            senderEmail={senderEmail}
+            onFree={() =>
+              router.push(`/create/success?slug=${createdSurprise.slug}`)
+            }
+            onPaidSuccess={() =>
+              router.push(`/create/success?slug=${createdSurprise.slug}`)
+            }
+            onClose={() => setShowPlanModal(false)}
+          />
         )}
       </div>
     );

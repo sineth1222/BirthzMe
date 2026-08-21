@@ -19,6 +19,7 @@ import {
   MusicPlayer,
   type MusicPlayerHandle,
 } from "@/components/birthday/MusicPlayer";
+import { Watermark } from "../shared/Watermark";
 
 // ---- Cinematic Gold token system ----
 const TOKENS = {
@@ -89,6 +90,7 @@ export function CinematicGoldTemplate({ surprise, onEvent }: TemplateProps) {
         fontFamily: "var(--font-outfit, sans-serif)",
       }}
     >
+      {surprise.hasWatermark && <Watermark />}
       <LightRays color={TOKENS.gold} />
       <ConfettiBurst
         trigger={burst}

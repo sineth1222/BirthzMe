@@ -19,6 +19,7 @@ import {
   MusicPlayer,
   type MusicPlayerHandle,
 } from "@/components/birthday/MusicPlayer";
+import { Watermark } from "../shared/Watermark";
 
 // ---- Dreamy Pink token system ----
 const TOKENS = {
@@ -92,6 +93,7 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
         fontFamily: "var(--font-outfit, sans-serif)",
       }}
     >
+      {surprise.hasWatermark && <Watermark />}
       <ConfettiBurst
         trigger={burst}
         colors={TOKENS.confetti}

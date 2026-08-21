@@ -1,12 +1,21 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/shared/ServiceWorkerRegistrar";
+import { SiteWatermark } from "@/components/shared/SiteWatermark";
 
 export const metadata: Metadata = {
   title: "BirthzMe — Make Their Birthday Unforgettable",
   description:
     "Create a personalized, animated birthday surprise and share it with a private link.",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -27,7 +36,8 @@ export default function RootLayout({
         <ServiceWorkerRegistrar />
 
         {children}
-        {/* ── Background logo watermark ── */}
+        <SiteWatermark />
+        {/* ── Background logo watermark ── /}
         <div className="absolute inset-0 z-[1] flex items-center justify-center pointer-events-none overflow-hidden">
           <div
             style={{
@@ -48,7 +58,7 @@ export default function RootLayout({
               }}
             />
           </div>
-        </div>
+        </div>*/}
       </body>
     </html>
   );

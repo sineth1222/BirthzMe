@@ -25,34 +25,59 @@ export async function POST(req: NextRequest) {
   const recipientAge = Number(body.recipientAge);
   const senderName = String(body.senderName ?? "").trim();
   const birthdayMessage = String(body.birthdayMessage ?? "").trim();
-  const template = ["dreamy-pink", "cinematic-gold", "fun-party"].includes(body.template)
+  const template = ["dreamy-pink", "cinematic-gold", "fun-party"].includes(
+    body.template,
+  )
     ? body.template
     : null;
 
   if (!recipientName || recipientName.length > 60) {
-    return NextResponse.json({ error: "Recipient name is required (max 60 chars)." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Recipient name is required (max 60 chars)." },
+      { status: 400 },
+    );
   }
-  if (!Number.isInteger(recipientAge) || recipientAge < 1 || recipientAge > 130) {
-    return NextResponse.json({ error: "Recipient age must be between 1 and 130." }, { status: 400 });
+  if (
+    !Number.isInteger(recipientAge) ||
+    recipientAge < 1 ||
+    recipientAge > 130
+  ) {
+    return NextResponse.json(
+      { error: "Recipient age must be between 1 and 130." },
+      { status: 400 },
+    );
   }
   if (!senderName || senderName.length > 60) {
-    return NextResponse.json({ error: "Your name is required (max 60 chars)." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Your name is required (max 60 chars)." },
+      { status: 400 },
+    );
   }
   if (!birthdayMessage || birthdayMessage.length > 2000) {
-    return NextResponse.json({ error: "A birthday message is required (max 2000 chars)." }, { status: 400 });
+    return NextResponse.json(
+      { error: "A birthday message is required (max 2000 chars)." },
+      { status: 400 },
+    );
   }
   if (!template) {
-    return NextResponse.json({ error: "Please choose a valid template." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Please choose a valid template." },
+      { status: 400 },
+    );
   }
 
-  const slug = await buildUniqueSlug(recipientName, recipientAge, async (candidate) => {
-    const { data } = await supabase
-      .from("birthday_surprises")
-      .select("id")
-      .eq("slug", candidate)
-      .maybeSingle();
-    return !!data;
-  });
+  const slug = await buildUniqueSlug(
+    recipientName,
+    recipientAge,
+    async (candidate) => {
+      const { data } = await supabase
+        .from("birthday_surprises")
+        .select("id")
+        .eq("slug", candidate)
+        .maybeSingle();
+      return !!data;
+    },
+  );
 
   const { data, error } = await supabase
     .from("birthday_surprises")
@@ -75,13 +100,18 @@ export async function POST(req: NextRequest) {
       music_type: body.musicType || null,
       accent_color: body.accentColor || null,
       animation_style: body.animationStyle || "magical",
+      has_watermark: true,
       status: "published",
     })
-    .select("slug")
+    //.select("slug")
+    .select("id, slug")
     .single();
 
   if (error || !data) {
-    return NextResponse.json({ error: "Could not create the surprise." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Could not create the surprise." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ slug: data.slug });

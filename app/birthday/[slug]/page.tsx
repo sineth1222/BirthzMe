@@ -41,6 +41,7 @@ async function getSurprise(slug: string): Promise<BirthdaySurprise | null> {
     musicType: data.music_type,
     accentColor: data.accent_color ?? undefined,
     animationStyle: data.animation_style ?? "magical",
+    hasWatermark: data.has_watermark ?? true,
     status: data.status,
     openedAt: data.opened_at,
     completedAt: data.completed_at,
@@ -49,7 +50,9 @@ async function getSurprise(slug: string): Promise<BirthdaySurprise | null> {
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const surprise = await getSurprise(slug);
   if (!surprise) {
@@ -76,9 +79,15 @@ export default async function BirthdayPage({ params }: PageProps) {
   return (
     <>
       <BirthdayEventTracker surpriseId={surprise.id} />
-      {surprise.template === "dreamy-pink" && <DreamyPinkTemplate surprise={surprise} />}
-      {surprise.template === "cinematic-gold" && <CinematicGoldTemplate surprise={surprise} />}
-      {surprise.template === "fun-party" && <FunPartyTemplate surprise={surprise} />}
+      {surprise.template === "dreamy-pink" && (
+        <DreamyPinkTemplate surprise={surprise} />
+      )}
+      {surprise.template === "cinematic-gold" && (
+        <CinematicGoldTemplate surprise={surprise} />
+      )}
+      {surprise.template === "fun-party" && (
+        <FunPartyTemplate surprise={surprise} />
+      )}
     </>
   );
 }

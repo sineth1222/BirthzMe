@@ -6,9 +6,22 @@ interface RouteParams {
 }
 
 const EDITABLE_FIELDS = [
-  "recipient_name", "recipient_age", "relationship", "nickname", "sender_name",
-  "main_photo_url", "memory_photos", "birthday_message", "special_memory",
-  "inside_joke", "quote", "music_url", "music_type", "accent_color", "animation_style",
+  "recipient_name",
+  "recipient_age",
+  "relationship",
+  "nickname",
+  "sender_name",
+  "main_photo_url",
+  "memory_photos",
+  "birthday_message",
+  "special_memory",
+  "inside_joke",
+  "quote",
+  "music_url",
+  "music_type",
+  "accent_color",
+  "animation_style",
+  "has_watermark",
 ] as const;
 
 export async function PATCH(req: NextRequest, { params }: RouteParams) {
@@ -30,7 +43,10 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   }
 
   if (Object.keys(updates).length === 0) {
-    return NextResponse.json({ error: "No editable fields provided." }, { status: 400 });
+    return NextResponse.json(
+      { error: "No editable fields provided." },
+      { status: 400 },
+    );
   }
 
   // RLS (`creator_id = auth.uid()`) is the real authorization boundary here —
@@ -42,7 +58,10 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
     .eq("creator_id", user.id);
 
   if (error) {
-    return NextResponse.json({ error: "Could not update the surprise." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Could not update the surprise." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ ok: true });
@@ -66,7 +85,10 @@ export async function DELETE(_req: NextRequest, { params }: RouteParams) {
     .eq("creator_id", user.id);
 
   if (error) {
-    return NextResponse.json({ error: "Could not delete the surprise." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Could not delete the surprise." },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ ok: true });

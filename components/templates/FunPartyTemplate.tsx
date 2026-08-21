@@ -17,6 +17,7 @@ import {
   MusicPlayer,
   type MusicPlayerHandle,
 } from "@/components/birthday/MusicPlayer";
+import { Watermark } from "../shared/Watermark";
 
 // ---- Fun Party token system ----
 const TOKENS = {
@@ -85,6 +86,7 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
         fontFamily: "var(--font-outfit, sans-serif)",
       }}
     >
+      {surprise.hasWatermark && <Watermark />}
       <BalloonField
         colors={[TOKENS.coral, TOKENS.teal, TOKENS.purple, TOKENS.yellow]}
         count={7}
