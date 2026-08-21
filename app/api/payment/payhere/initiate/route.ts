@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
   }
 
   const orderId = `wm-${surprise.id}-${Date.now()}`;
+  console.log("secret set:", !!process.env.PAYHERE_MERCHANT_SECRET);
   const hash = generatePayHereHash({
     orderId,
     amount: WATERMARK_REMOVAL_PRICE,
