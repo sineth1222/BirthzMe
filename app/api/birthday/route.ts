@@ -114,5 +114,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ slug: data.slug });
+  //return NextResponse.json({ slug: data.slug });
+  return NextResponse.json({ id: data.id, slug: data.slug });
 }
