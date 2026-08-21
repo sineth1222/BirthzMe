@@ -35,12 +35,12 @@ export async function POST(req: NextRequest) {
   }
 
   const orderId = `wm-${surprise.id}-${Date.now()}`;
-  console.log("PayHere debug:", {
+  /*console.log("PayHere debug:", {
     merchantIdUsed: process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID,
     secretLength: process.env.PAYHERE_MERCHANT_SECRET?.length,
     secretFirst3: process.env.PAYHERE_MERCHANT_SECRET?.slice(0, 3),
     secretLast3: process.env.PAYHERE_MERCHANT_SECRET?.slice(-3),
-  });
+  });*/
   //console.log("secret set:", !!process.env.PAYHERE_MERCHANT_SECRET);
   const hash = generatePayHereHash({
     orderId,
