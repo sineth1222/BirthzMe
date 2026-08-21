@@ -87,8 +87,14 @@ export function CreateWizard() {
           draft.recipientAge &&
           draft.senderName.trim()
         );
+      /*case 2:
+        return !photosUploading && !!draft.mainPhotoUrl;*/
       case 2:
-        return !photosUploading && !!draft.mainPhotoUrl;
+        return (
+          !photosUploading &&
+          !!draft.mainPhotoUrl &&
+          draft.memoryPhotos.length > 0
+        );
       case 3:
         return draft.birthdayMessage.trim().length > 0;
       default:
@@ -235,11 +241,19 @@ export function CreateWizard() {
           />
         )}
 
-        {step === 2 && !draft.mainPhotoUrl && !photosUploading && (
+        {/*step === 2 && !draft.mainPhotoUrl && !photosUploading && (
           <p className="mb-3 text-xs" style={{ color: "#B8265A" }}>
             Add a main photo to continue.
           </p>
-        )}
+        )*/}
+
+        {step === 2 &&
+          (!draft.mainPhotoUrl || draft.memoryPhotos.length === 0) &&
+          !photosUploading && (
+            <p className="mb-3 text-xs" style={{ color: "#B8265A" }}>
+              Add a main photo and at least one memory photo to continue.
+            </p>
+          )}
 
         {step === 2 && (
           <PhotoUploader
