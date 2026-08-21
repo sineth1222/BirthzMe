@@ -76,9 +76,9 @@ export default function LandingPage() {
           colors={["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#f368e0"]}
           count={2}
         />
-        <FireworksText
+        {/* <FireworksText
           colors={["#ff6b9d", "#4ecdc4", "#ffe66d", "#a29bfe", "#ff9f43"]}
-        />
+        />*/}
         <BalloonField colors={["#B8265A", "#E3B583", "#F6DDE0"]} count={5} />
 
         {/* soft watermark cake behind the copy, echoes the hero centerpiece at low opacity */}

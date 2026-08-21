@@ -76,9 +76,9 @@ export function FunPartyTemplate({ surprise, onEvent }: TemplateProps) {
         colors={[TOKENS.coral, TOKENS.teal, TOKENS.purple, TOKENS.yellow]}
         count={7}
       />
-      <FireworksText
+      {/*<FireworksText
         colors={["#ff6b9d", "#4ecdc4", "#ffe66d", "#a29bfe", "#ff9f43"]}
-      />
+      />*/}
       <ConfettiBurst trigger={burst} colors={TOKENS.confetti} count={80} />
       {surprise.musicUrl && (
         <MusicPlayer

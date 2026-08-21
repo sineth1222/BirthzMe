@@ -88,9 +88,9 @@ export function DreamyPinkTemplate({ surprise, onEvent }: TemplateProps) {
         colors={["#ff6b6b", "#feca57", "#48dbfb", "#1dd1a1", "#f368e0"]}
         count={2}
       />
-      <FireworksText
+      {/* <FireworksText
         colors={["#ff6b9d", "#4ecdc4", "#ffe66d", "#a29bfe", "#ff9f43"]}
-      />
+      />*/}
 
       <BalloonField
         colors={[TOKENS.rose, TOKENS.gold, TOKENS.mauve, TOKENS.yellow]}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { uploadToImageKit, validateFile } from "@/lib/upload";
 import type { MemoryPhoto } from "@/types/birthday";
@@ -10,6 +10,7 @@ interface PhotoUploaderProps {
   memoryPhotos: MemoryPhoto[];
   onMainPhotoChange: (url: string | null) => void;
   onMemoryPhotosChange: (photos: MemoryPhoto[]) => void;
+  onUploadingChange?: (isUploading: boolean) => void;
 }
 
 export function PhotoUploader({
@@ -17,10 +18,15 @@ export function PhotoUploader({
   memoryPhotos,
   onMainPhotoChange,
   onMemoryPhotosChange,
+  onUploadingChange,
 }: PhotoUploaderProps) {
   const [uploadingMain, setUploadingMain] = useState(false);
   const [uploadingMemory, setUploadingMemory] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    onUploadingChange?.(uploadingMain || uploadingMemory);
+  }, [uploadingMain, uploadingMemory, onUploadingChange]);
 
   const handleMainUpload = async (file: File) => {
     setError(null);

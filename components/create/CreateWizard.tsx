@@ -75,6 +75,8 @@ export function CreateWizard() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const [photosUploading, setPhotosUploading] = useState(false);
+
   const canAdvance = () => {
     switch (step) {
       case 0:
@@ -85,6 +87,8 @@ export function CreateWizard() {
           draft.recipientAge &&
           draft.senderName.trim()
         );
+      case 2:
+        return !photosUploading && !!draft.mainPhotoUrl;
       case 3:
         return draft.birthdayMessage.trim().length > 0;
       default:
@@ -231,12 +235,19 @@ export function CreateWizard() {
           />
         )}
 
+        {step === 2 && !draft.mainPhotoUrl && !photosUploading && (
+          <p className="mb-3 text-xs" style={{ color: "#B8265A" }}>
+            Add a main photo to continue.
+          </p>
+        )}
+
         {step === 2 && (
           <PhotoUploader
             mainPhotoUrl={draft.mainPhotoUrl}
             memoryPhotos={draft.memoryPhotos}
             onMainPhotoChange={(url) => update("mainPhotoUrl", url)}
             onMemoryPhotosChange={(photos) => update("memoryPhotos", photos)}
+            onUploadingChange={setPhotosUploading}
           />
         )}
 
