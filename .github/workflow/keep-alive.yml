@@ -1,0 +1,14 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # daily, UTC midnight
+  workflow_dispatch: # allows manual trigger from GitHub UI too
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping keep-alive endpoint
+        run: |
+          curl -f "https://uzme.vercel.app/api/cron/keep-alive?secret=${{ secrets.CRON_SECRET }}"
