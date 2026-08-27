@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping keep-alive endpoint
         run: |
-          curl -f "https://birthz-me.vercel.app/api/cron/keep-alive?secret=${{ secrets.CRON_SECRET }}"
+          curl -f "https://birthzme.vercel.app/api/cron/keep-alive?secret=${{ secrets.CRON_SECRET }}"
