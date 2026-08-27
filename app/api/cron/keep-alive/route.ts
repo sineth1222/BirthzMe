@@ -4,15 +4,20 @@ import { createServiceSupabase } from "@/lib/supabase/server";
 /**
  * Pings the database with a trivial query so Supabase's free-tier
  * auto-pause (triggered after 7 days with zero API requests) never
- * kicks in. Called on a schedule by Vercel Cron (see vercel.json) — not
- * meant to be hit manually or by the public.
+ * kicks in. Accepts the secret either as a header (the method Vercel's
+ * own Cron Jobs use automatically) or as a query param (what external
+ * services like GitHub Actions / cron-job.org can actually set) — both
+ * are checked against the same CRON_SECRET env var.
  */
 export async function GET(req: NextRequest) {
-  // Vercel signs cron requests with this header when CRON_SECRET is set
-  // in your project's env vars — this stops randoms from hitting the
-  // route and stops it from doing anything if called without the secret.
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const querySecret = req.nextUrl.searchParams.get("secret");
+
+  const validHeader = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+  const validQuery =
+    !!process.env.CRON_SECRET && querySecret === process.env.CRON_SECRET;
+
+  if (!validHeader && !validQuery) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
