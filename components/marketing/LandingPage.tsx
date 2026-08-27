@@ -62,7 +62,7 @@ export default function LandingPage() {
     >
       {/* HERO */}
       <section
-        className="relative overflow-hidden px-4 py-16 sm:py-20 md:py-28"
+        className="relative min-h-screen overflow-hidden px-4 py-16 sm:py-20 md:py-28"
         style={{
           background:
             "radial-gradient(ellipse at 50% -10%, #FCE4E8 0%, #FDF3EF 55%, #F8E9E2 100%)",
